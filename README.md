@@ -103,7 +103,8 @@ gadafi_dollar_printer/
     │   └── index.html               # SEO meta, Bootstrap Icons CDN
     ├── src/
     │   ├── services/
-    │   │   └── api.js               # Axios instance + all API calls
+    │   │   └── api.js  
+    |   |__ styles/main.css(respsoive in all screens use deriv font and structure )             # Axios instance + all API calls
     │   ├── components/
     │   │   ├── Navbar.jsx
     │   │   ├── TradePanel.jsx

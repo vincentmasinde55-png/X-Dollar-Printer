@@ -11,6 +11,8 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
 from pathlib import Path
+from datetime import timedelta
+from decouple import config
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -20,12 +22,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-wg46bb9hts)jumz&lr76)$13)!))c0)$vw%czt5=17t941$ih8'
+SECRET_KEY = config('SECRET_KEY', default='django-insecure-wg46bb9hts)jumz&lr76)$13)!))c0)$vw%czt5=17t941$ih8')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = config('DEBUG', default=True, cast=bool)
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='127.0.0.1,localhost', cast=lambda v: [s.strip() for s in v.split(',')])
 
 
 # Application definition
@@ -37,10 +39,19 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
+    # Third-party
+    'rest_framework',
+    'rest_framework.authtoken',
+    'corsheaders',
+
+    # Local apps
+    'core',  # <-- replace with your actual app name
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -104,7 +115,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Africa/Nairobi'
 
 USE_I18N = True
 
@@ -120,3 +131,101 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+# ---------------------------------------------------------------------------
+# Custom User model
+# ---------------------------------------------------------------------------
+
+AUTH_USER_MODEL = 'core.User'  # <-- replace 'trading' with your actual app name
+
+
+# ---------------------------------------------------------------------------
+# Django REST Framework
+# ---------------------------------------------------------------------------
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.TokenAuthentication',
+    ],
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticated',
+    ],
+    'DEFAULT_RENDERER_CLASSES': [
+        'rest_framework.renderers.JSONRenderer',
+    ],
+}
+
+
+# ---------------------------------------------------------------------------
+# CORS (for frontend communication — adjust for production)
+# ---------------------------------------------------------------------------
+
+CORS_ALLOW_ALL_ORIGINS = config('CORS_ALLOW_ALL_ORIGINS', default=True, cast=bool)
+
+# In production, replace the above with:
+# CORS_ALLOWED_ORIGINS = [
+#     "https://your-frontend-domain.com",
+# ]
+
+CORS_ALLOW_CREDENTIALS = True
+
+
+# ---------------------------------------------------------------------------
+# M-Pesa Daraja API credentials (loaded via python-decouple from .env)
+# ---------------------------------------------------------------------------
+
+MPESA_CONSUMER_KEY = config('MPESA_CONSUMER_KEY', default='')
+MPESA_CONSUMER_SECRET = config('MPESA_CONSUMER_SECRET', default='')
+MPESA_SHORTCODE = config('MPESA_SHORTCODE', default='')
+MPESA_PASSKEY = config('MPESA_PASSKEY', default='')
+MPESA_CALLBACK_URL = config('MPESA_CALLBACK_URL', default='')
+
+MPESA_AUTH_URL = config(
+    'MPESA_AUTH_URL',
+    default='https://sandbox.safaricom.co.ke/oauth/v1/generate?grant_type=client_credentials',
+)
+MPESA_STK_URL = config(
+    'MPESA_STK_URL',
+    default='https://sandbox.safaricom.co.ke/mpesa/stkpush/v1/processrequest',
+)
+MPESA_B2C_URL = config(
+    'MPESA_B2C_URL',
+    default='https://sandbox.safaricom.co.ke/mpesa/b2c/v1/paymentrequest',
+)
+
+# B2C (withdrawal) credentials
+MPESA_B2C_INITIATOR = config('MPESA_B2C_INITIATOR', default='')
+MPESA_B2C_SECURITY_CREDENTIAL = config('MPESA_B2C_SECURITY_CREDENTIAL', default='')
+MPESA_B2C_SHORTCODE = config('MPESA_B2C_SHORTCODE', default='')
+MPESA_B2C_TIMEOUT_URL = config('MPESA_B2C_TIMEOUT_URL', default=MPESA_CALLBACK_URL)
+MPESA_B2C_RESULT_URL = config(
+    'MPESA_B2C_RESULT_URL',
+    default=(MPESA_CALLBACK_URL.rstrip('/') + '/b2c/') if MPESA_CALLBACK_URL else ''
+)
+
+
+# ---------------------------------------------------------------------------
+# Logging (so logger.error/info/warning in views.py actually show up)
+# ---------------------------------------------------------------------------
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+        },
+    },
+    'root': {
+        'handlers': ['console'],
+        'level': 'INFO',
+    },
+    'loggers': {
+        'core': {  # <-- replace 'trading' with your actual app name
+            'handlers': ['console'],
+            'level': 'DEBUG',
+            'propagate': False,
+        },
+    },
+}
