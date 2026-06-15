@@ -11,7 +11,7 @@ import History from "./pages/History.jsx";
 export default function App() {
   return (
     <>
-      <Navbar />
+      <Navbar /> 
       <main className="app-main">
         <Routes>
           <Route path="/login" element={<Login />} />
