@@ -24,21 +24,21 @@ from core.models import MpesaTransaction, Tick, Trade, User
 DEMO_USERS = [
     {
         "username": "demo_trader",
-        "email": "demo@gadafiprinter.test",
+        "email": "demo@optafx.test",
         "phone": "254712345678",
         "password": "DemoPass123!",
         "balance": Decimal("5000.00"),
     },
     {
         "username": "jane_doe",
-        "email": "jane@gadafiprinter.test",
+        "email": "jane@optafx.test",
         "phone": "254722334455",
         "password": "DemoPass123!",
         "balance": Decimal("1500.00"),
     },
     {
         "username": "kim_otieno",
-        "email": "kim@gadafiprinter.test",
+        "email": "kim@optafx.test",
         "phone": "254733445566",
         "password": "DemoPass123!",
         "balance": Decimal("250.00"),
