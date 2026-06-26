@@ -1,4 +1,4 @@
-# X Dollar Printer
+# OptaFX
 
 A binary trading platform clone built with Django REST Framework and React Vite. Users can trade binary options (Odd/Even, Over/Under), deposit and withdraw via M-Pesa, and monitor live chart activity.
 
@@ -79,7 +79,7 @@ A binary trading platform clone built with Django REST Framework and React Vite.
 ## Project Structure
 
 ```
-gadafi_dollar_printer/
+Opta_FX/
 │
 ├── backend/
 │   ├── core/                        # Single Django application
