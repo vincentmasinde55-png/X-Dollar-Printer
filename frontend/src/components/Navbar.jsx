@@ -55,8 +55,8 @@ export default function Navbar() {
     <header className="navbar">
       <div className="navbar__inner">
         <Link to="/" className="navbar__brand" onClick={() => setMenuOpen(false)}>
-          <span className="navbar__brand-mark">GD</span>
-          <span className="navbar__brand-text">Gadafi Dollar Printer</span>
+          <span className="navbar__brand-mark">OF</span>
+          <span className="navbar__brand-text">OptaFX</span>
         </Link>
 
         {token && (
